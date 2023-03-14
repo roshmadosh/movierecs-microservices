@@ -1,0 +1,10 @@
+# Intellij
+**/.idea
+**/*.iml
+
+**/target
+
+**/.mvn
+
+/static
+
