@@ -4,13 +4,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import link.hiroshiprojects.movierecs.fetchservice.models.MovieIdInfo;
+import link.hiroshiprojects.movierecs.fetchservice.utils.MovieIdUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.nio.file.Path;
-import java.util.ArrayList;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 
@@ -43,28 +44,9 @@ public class MovieIdServiceLocal implements MovieIdService {
     }
 
     @Override
-    public List<Long> getIds(long count, Path location) {
-        List<Long> movieIdInfos = new ArrayList<>();
-        try (BufferedReader reader =
-                     new BufferedReader(new FileReader(location.toFile()))) {
-
-            // map each JSON to a MovieIdInfo instance
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
-            for (int i = 0; i < count; i++) {
-                String line = reader.readLine();
-                Long id = mapper.readValue(line, MovieIdInfo.class).getId();
-                movieIdInfos.add(id);
-            }
-
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        return movieIdInfos;
+    public List<Long> getIds(long count) {
+        Path path = Paths.get("static/movieids.json");
+        MovieIdUtility movieIdUtility = new MovieIdUtility(path.toFile());
+        return movieIdUtility.getIds(count);
     }
 }

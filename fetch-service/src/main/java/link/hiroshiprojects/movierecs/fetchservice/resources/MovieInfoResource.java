@@ -26,8 +26,7 @@ public class MovieInfoResource {
 
     @GetMapping
     public List<Long> getMovieInfo(@RequestParam(value = "count", required = false) long count) {
-        Path path = Paths.get("static/movieids.json");
-        List<Long> ids = idService.getIds(count, path);
+        List<Long> ids = idService.getIds(count);
         return ids;
     }
 }

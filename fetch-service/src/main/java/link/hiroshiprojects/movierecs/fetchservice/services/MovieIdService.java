@@ -8,6 +8,6 @@ public interface MovieIdService {
 
     public void save(File file, Path path);
 
-    public List<Long> getIds(long count, Path path);
+    public List<Long> getIds(long count);
 
 }

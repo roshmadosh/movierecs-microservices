@@ -3,6 +3,8 @@ package link.hiroshiprojects.movierecs.fetchservice.resources;
 import link.hiroshiprojects.movierecs.fetchservice.services.MovieIdService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,8 @@ import org.springframework.web.client.RestTemplate;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @RestController
@@ -23,17 +27,15 @@ public class MovieIdResource {
     @Value("${ids.url}")
     private String url;
 
-    private RestTemplate restTemplate;
+    @Autowired
     private MovieIdService idService;
+
+    @Autowired
+    private RestTemplate restTemplate;
     private final Logger logger = LoggerFactory.getLogger(MovieIdResource.class);
 
-    public MovieIdResource(RestTemplate restTemplate, MovieIdService idService) {
-        this.restTemplate = restTemplate;
-        this.idService = idService;
-    }
-
     @GetMapping
-    public ResponseEntity<String> getIds() {
+    public ResponseEntity<Map<String, Object>> getIds() {
         logger.info("Fetching IDs from " + url + "...");
 
         File file = restTemplate.execute(url, HttpMethod.GET, null, clientResponse -> {
@@ -42,15 +44,18 @@ public class MovieIdResource {
            return ret;
         });
 
-        Path path = Paths.get("static/movieids.json");
 
+        Path path = Paths.get("static/movieids.json");
+        Map<String, Object> respObject = new HashMap<>();
         try {
             idService.save(file, path);
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Failed to save file.");
+            respObject.put("message", "Failed to save file.");
+            return ResponseEntity.internalServerError().body(respObject);
         }
 
-        return ResponseEntity.ok("Saved file successfully!");
+        respObject.put("message", "Saved file successfully!");
+        return ResponseEntity.ok().body(respObject);
     }
 
 }
