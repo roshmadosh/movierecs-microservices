@@ -12,7 +12,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/fetch/movie-info")
+@RequestMapping(value = "/api/v1/fetch/movie-info", produces = "application/json")
 public class MovieInfoResource {
 
     @Value("${source.url}")

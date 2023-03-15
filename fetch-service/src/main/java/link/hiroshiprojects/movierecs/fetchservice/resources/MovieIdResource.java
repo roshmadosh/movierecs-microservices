@@ -18,7 +18,7 @@ import java.nio.file.Paths;
 
 
 @RestController
-@RequestMapping("api/v1/fetch/movie-id")
+@RequestMapping(value = "api/v1/fetch/movie-id", produces = "application/json")
 public class MovieIdResource {
     @Value("${ids.url}")
     private String url;
