@@ -31,12 +31,9 @@ public class MovieInfoResource {
 
     @GetMapping
     public List<MovieInfo> getMovieInfo(@RequestParam(value = "count") long count,
-                                        @RequestParam(value = "save") boolean save) {
+                                        @RequestParam(value = "save", required = false) boolean save) {
         List<Long> ids = idService.getIds(count);
-        List<MovieInfo> infos = new ArrayList<>();
-        for (long id: ids) {
-            infos.add(movieInfoService.getMovieDetails(id));
-        }
+        List<MovieInfo> infos = movieInfoService.getMovieDetails(ids);
 
         if (save) {
            movieInfoService.saveMovieDetails(infos);

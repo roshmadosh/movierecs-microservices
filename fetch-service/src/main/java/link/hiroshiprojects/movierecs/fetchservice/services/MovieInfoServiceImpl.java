@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,11 +32,41 @@ public class MovieInfoServiceImpl implements MovieInfoService {
     }
 
     @Override
-    public MovieInfo getMovieDetails(long movieId) {
-        logger.info("Fetching movie details for movie ID " + movieId + "...");
-        String url = String.format("%s/movie/%s?api_key=%s", HOST, movieId, API_KEY);
+    public List<MovieInfo> getMovieDetails(List<Long> movieIds) {
+        // open a thread pool
+        int THREAD_COUNT = 5;
+        ExecutorService executor = Executors.newFixedThreadPool(THREAD_COUNT);
+        List<Future<MovieInfo>> futures = new ArrayList<>();
 
-        return restTemplate.getForObject(url, MovieInfo.class);
+        logger.info("Fetching movie details...");
+        // fetch details for all ids
+        for (int i = 0; i < movieIds.size(); i++) {
+            long id = movieIds.get(i);
+
+            // write to log for every 100th movie
+            if (i % 100 == 0) {
+                logger.info("PULSE CHECK: Still fetching. Most recent ID fetched: " + id);
+            }
+
+            // dispatch thread
+            Callable<MovieInfo> callable = new GetDetailsCallable(id);
+            Future<MovieInfo> future = executor.submit(callable);
+            futures.add(future);
+        }
+
+        // resolve futures
+        List<MovieInfo> details = futures.stream().map(future -> {
+            try {
+                return future.get();
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }).collect(Collectors.toList());
+
+        logger.info("Fetched movie details successfully!");
+        return details;
     }
 
     @Override
@@ -58,4 +90,20 @@ public class MovieInfoServiceImpl implements MovieInfoService {
             throw new RuntimeException(e);
         }
     }
+
+    private class GetDetailsCallable implements Callable<MovieInfo> {
+        private long movieId;
+
+        GetDetailsCallable(long movieId) {
+            this.movieId = movieId;
+        }
+
+        @Override
+        public MovieInfo call() throws Exception {
+            String url = String.format("%s/movie/%s?api_key=%s", HOST, movieId, API_KEY);
+
+            return restTemplate.getForObject(url, MovieInfo.class);
+        }
+    }
+
 }

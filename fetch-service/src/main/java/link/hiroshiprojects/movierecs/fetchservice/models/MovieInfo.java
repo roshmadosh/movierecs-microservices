@@ -25,8 +25,8 @@ public class MovieInfo {
 
     public String genereateCsvString() {
         return id + CSV_DELIMTIER +
-                title + CSV_DELIMTIER +
-                overview + CSV_DELIMTIER +
+                title.replaceAll(",", "") + CSV_DELIMTIER +
+                overview.replaceAll(",", "") + CSV_DELIMTIER +
                 popularity + CSV_DELIMTIER +
                 posterPath;
     }
