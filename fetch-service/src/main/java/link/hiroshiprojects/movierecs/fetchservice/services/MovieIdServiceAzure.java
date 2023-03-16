@@ -18,6 +18,11 @@ import java.util.zip.GZIPInputStream;
 public class MovieIdServiceAzure implements MovieIdService {
     @Value("azure-blob://datasets/movieids.json.gz")
     private Resource blobFile;
+    private MovieIdUtility movieIdUtility;
+
+    public MovieIdServiceAzure(MovieIdUtility movieIdUtility) {
+        this.movieIdUtility = movieIdUtility;
+    }
 
     @Override
     public void save(File file, Path path) {
@@ -41,7 +46,7 @@ public class MovieIdServiceAzure implements MovieIdService {
             }
             fos.close();
 
-            MovieIdUtility movieIdUtility = new MovieIdUtility(path.toFile());
+            movieIdUtility.setFile(path.toFile());
             return movieIdUtility.getIds(count);
         } catch (IOException e) {
             throw new RuntimeException(e);

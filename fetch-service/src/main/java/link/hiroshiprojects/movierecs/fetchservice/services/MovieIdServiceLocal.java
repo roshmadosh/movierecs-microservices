@@ -1,9 +1,5 @@
 package link.hiroshiprojects.movierecs.fetchservice.services;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import link.hiroshiprojects.movierecs.fetchservice.models.MovieIdInfo;
 import link.hiroshiprojects.movierecs.fetchservice.utils.MovieIdUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +15,11 @@ import java.util.zip.GZIPInputStream;
 public class MovieIdServiceLocal implements MovieIdService {
 
     private final Logger logger = LoggerFactory.getLogger(MovieIdServiceLocal.class);
+    private MovieIdUtility movieIdUtility;
+
+    public MovieIdServiceLocal(MovieIdUtility movieIdUtility) {
+        this.movieIdUtility = movieIdUtility;
+    }
 
     @Override
     public void save(File file, Path dest) {
@@ -46,7 +47,8 @@ public class MovieIdServiceLocal implements MovieIdService {
     @Override
     public List<Long> getIds(long count) {
         Path path = Paths.get("static/movieids.json");
-        MovieIdUtility movieIdUtility = new MovieIdUtility(path.toFile());
+        movieIdUtility.setFile(path.toFile());
+
         return movieIdUtility.getIds(count);
     }
 }

@@ -1,6 +1,8 @@
 package link.hiroshiprojects.movierecs.fetchservice.resources;
 
+import link.hiroshiprojects.movierecs.fetchservice.models.MovieInfo;
 import link.hiroshiprojects.movierecs.fetchservice.services.MovieIdService;
+import link.hiroshiprojects.movierecs.fetchservice.services.MovieInfoService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -19,14 +22,20 @@ public class MovieInfoResource {
     String url;
 
     MovieIdService idService;
+    MovieInfoService movieInfoService;
 
-    public MovieInfoResource(MovieIdService idService) {
+    public MovieInfoResource(MovieIdService idService, MovieInfoService movieInfoService) {
         this.idService = idService;
+        this.movieInfoService = movieInfoService;
     }
 
     @GetMapping
-    public List<Long> getMovieInfo(@RequestParam(value = "count", required = false) long count) {
+    public List<MovieInfo> getMovieInfo(@RequestParam(value = "count", required = false) long count) {
         List<Long> ids = idService.getIds(count);
-        return ids;
+        List<MovieInfo> infos = new ArrayList<>();
+        for (long id: ids) {
+            infos.add(movieInfoService.getMovieDetails(id));
+        }
+        return infos;
     }
 }

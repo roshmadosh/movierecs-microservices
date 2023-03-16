@@ -4,25 +4,32 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import link.hiroshiprojects.movierecs.fetchservice.models.MovieIdInfo;
+import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class MovieIdUtility {
+    private ObjectMapper mapper;
     private File file;
 
-    public MovieIdUtility(File file) {
+    public MovieIdUtility(ObjectMapper mapper) {
+        this.mapper = mapper;
+    }
+
+    public void setFile(File file) {
         this.file = file;
     }
 
+
     public List<Long> getIds(long count) {
+        if (file == null) {
+            throw new IllegalStateException("File must be set using .setFile() before calling .getIds()");
+        }
         List<Long> movieIdInfos = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-
-            // map each JSON to a MovieIdInfo instance
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
 
             for (int i = 0; i < count; i++) {
                 String line = reader.readLine();
