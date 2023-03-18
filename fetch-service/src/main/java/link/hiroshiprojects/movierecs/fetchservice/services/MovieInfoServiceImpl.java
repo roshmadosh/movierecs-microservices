@@ -34,7 +34,7 @@ public class MovieInfoServiceImpl implements MovieInfoService {
     @Override
     public List<MovieInfo> getMovieDetails(List<Long> movieIds) {
         // open a thread pool
-        int THREAD_COUNT = 5;
+        int THREAD_COUNT = 10;
         ExecutorService executor = Executors.newFixedThreadPool(THREAD_COUNT);
         List<Future<MovieInfo>> futures = new ArrayList<>();
 
@@ -74,10 +74,10 @@ public class MovieInfoServiceImpl implements MovieInfoService {
         List<String> movieStrings = movieInfos.stream().map(info -> info.genereateCsvString())
                 .collect(Collectors.toList());
 
-        logger.info("Initiating creation and persistence of " + "details.csv..");
+        logger.info("Initiating creation and persistence of " + "details.csv...");
         try (BufferedWriter writer = new BufferedWriter(
                 new OutputStreamWriter(((WritableResource) blobFile).getOutputStream()))) {
-           writer.write(MovieInfo.generateCsvStringHeader());
+//           writer.write(MovieInfo.generateCsvStringHeader());
 
            for (String row: movieStrings) {
                writer.newLine();
