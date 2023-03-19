@@ -14,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.LinkedList;
 import java.util.List;
 
 @Service
@@ -37,18 +38,26 @@ public class GenresServiceImpl implements GenresService {
         String url = String.format("%s/genre/movie/list?api_key=%s", HOST, KEY);
         Genres genres = restTemplate.getForObject(url, Genres.class);
 
+        logger.info("Genres fetched from TMDB API");
         return genres.getGenres();
     }
 
     @Override
     public void saveGenres(List<GenresObject> genres) {
        logger.info("Initiating creation and persistence of genres.json...");
-       JSONObject jsonObject = new JSONObject();
-       jsonObject.put("genres", genres);
+       List<JSONObject> genresJson = new LinkedList<>();
+       for (GenresObject genre: genres) {
+           JSONObject jsonObject = new JSONObject();
+           jsonObject.put("id", genre.getId());
+           jsonObject.put("name", genre.getName());
+           genresJson.add(jsonObject);
+       }
+       JSONObject json = new JSONObject();
+       json.put("genres", genresJson);
 
        try(BufferedWriter writer = new BufferedWriter(
                new OutputStreamWriter(((WritableResource) blobFile).getOutputStream()))) {
-           writer.write(jsonObject.toJSONString());
+           writer.write(json.toJSONString());
        } catch (IOException e) {
            throw new RuntimeException(e);
        }

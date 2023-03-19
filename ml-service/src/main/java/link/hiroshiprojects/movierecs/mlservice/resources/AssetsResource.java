@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/ml/assets")
+@RequestMapping(value = "api/v1/ml/assets", produces = "application/json")
 public class AssetsResource {
 
     private final AssetsService assetsService;
@@ -22,11 +22,14 @@ public class AssetsResource {
 
     @GetMapping("/details")
     public List<MovieDetails> getMovieDetails(@RequestParam int count) {
+        if (count > 5000) {
+            throw new RuntimeException("Only 5000 movies available.");
+        }
         return assetsService.getMovieDetails(count);
     }
 
     @GetMapping("/genres")
     public List<GenresObject> getMovieGenres() {
-        return null;
+        return assetsService.getGenres();
     }
 }
