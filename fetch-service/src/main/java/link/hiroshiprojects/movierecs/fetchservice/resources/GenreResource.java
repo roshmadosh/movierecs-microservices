@@ -1,14 +1,12 @@
 package link.hiroshiprojects.movierecs.fetchservice.resources;
 
-import link.hiroshiprojects.movierecs.fetchservice.models.Genres;
 import link.hiroshiprojects.movierecs.fetchservice.models.GenresObject;
 import link.hiroshiprojects.movierecs.fetchservice.services.GenresService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
 import java.util.List;
@@ -24,10 +22,14 @@ public class GenreResource {
     }
 
     @GetMapping()
-    public ResponseEntity<List<GenresObject>> getGenres() {
+    public ResponseEntity<List<GenresObject>> getGenres(@RequestParam(required = false) boolean save) {
         List<GenresObject> genres;
         try {
             genres = genreService.fetchGenres();
+            if (save) {
+                genreService.saveGenres(genres);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body(Collections.emptyList());
@@ -35,4 +37,5 @@ public class GenreResource {
 
         return ResponseEntity.ok().body(genres);
     }
+
 }

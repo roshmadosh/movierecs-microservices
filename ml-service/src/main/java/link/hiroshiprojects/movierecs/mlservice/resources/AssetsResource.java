@@ -1,5 +1,6 @@
 package link.hiroshiprojects.movierecs.mlservice.resources;
 
+import link.hiroshiprojects.movierecs.mlservice.models.GenresObject;
 import link.hiroshiprojects.movierecs.mlservice.models.MovieDetails;
 import link.hiroshiprojects.movierecs.mlservice.services.AssetsService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,8 +20,13 @@ public class AssetsResource {
         this.assetsService = assetsService;
     }
 
-    @GetMapping
+    @GetMapping("/details")
     public List<MovieDetails> getMovieDetails(@RequestParam int count) {
         return assetsService.getMovieDetails(count);
+    }
+
+    @GetMapping("/genres")
+    public List<GenresObject> getMovieGenres() {
+        return null;
     }
 }

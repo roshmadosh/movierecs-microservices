@@ -8,4 +8,6 @@ public interface GenresService {
 
     public List<GenresObject> fetchGenres();
 
+    public void saveGenres(List<GenresObject> genres);
+
 }

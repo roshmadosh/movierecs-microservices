@@ -16,9 +16,11 @@ import java.util.List;
 
 @Service
 public class AssetsServiceAzure implements AssetsService {
-    @Value("azure-blob://datasets/details.csv")
-    private Resource blobFile;
     private final Logger logger = LoggerFactory.getLogger(AssetsServiceAzure.class);
+    @Value("azure-blob://datasets/details.csv")
+    private Resource detailsBlob;
+    @Value("azure-blob://datasets/movieids.json.gz")
+    private Resource idsBlob;
 //    private final ObjectMapper mapper;
 
 //    public AssetsServiceAzure(ObjectMapper mapper) {
@@ -38,7 +40,7 @@ public class AssetsServiceAzure implements AssetsService {
                 .build();
         try(MappingIterator<MovieDetails> it = mapper.readerFor(MovieDetails.class)
                 .with(schema)
-                .readValues(blobFile.getInputStream())) {
+                .readValues(detailsBlob.getInputStream())) {
 
            int iter = 0;
            while (it.hasNextValue() && iter < count) {

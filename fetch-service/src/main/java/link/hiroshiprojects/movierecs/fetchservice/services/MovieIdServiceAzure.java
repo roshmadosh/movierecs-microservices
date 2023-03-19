@@ -1,11 +1,15 @@
 package link.hiroshiprojects.movierecs.fetchservice.services;
 
 import link.hiroshiprojects.movierecs.fetchservice.utils.MovieIdUtility;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.WritableResource;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -16,8 +20,13 @@ import java.util.zip.GZIPInputStream;
 @Service
 @Primary
 public class MovieIdServiceAzure implements MovieIdService {
+    private final Logger logger = LoggerFactory.getLogger(MovieIdServiceAzure.class);
+    @Value("${ids.url}")
+    private String url;
     @Value("azure-blob://datasets/movieids.json.gz")
     private Resource blobFile;
+    @Autowired
+    private RestTemplate restTemplate;
     private MovieIdUtility movieIdUtility;
 
     public MovieIdServiceAzure(MovieIdUtility movieIdUtility) {
@@ -25,31 +34,26 @@ public class MovieIdServiceAzure implements MovieIdService {
     }
 
     @Override
-    public void save(File file, Path path) {
-        try (OutputStream os = ((WritableResource) blobFile).getOutputStream()) {
-            os.write(Files.readAllBytes(file.toPath()));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
     public List<Long> getIds(long count) {
-        try (GZIPInputStream gis = new GZIPInputStream(blobFile.getInputStream())) {
-            // convert blob to File
-            Path path = Files.createTempFile("blob", ".json");
-            FileOutputStream fos = new FileOutputStream(path.toFile());
-            byte[] buffer = new byte[1024];
-            int len;
-            while ((len = gis.read(buffer)) > 0) {
-               fos.write(buffer, 0, len);
-            }
-            fos.close();
+        logger.info("Fetching IDs from TMDB API...");
+        return restTemplate.execute(url, HttpMethod.GET, null, clientResponse -> {
+            logger.info("Attempting to unzip file...");
+            try (GZIPInputStream gis = new GZIPInputStream(clientResponse.getBody())) {
+                Path path = Files.createTempFile("blob", ".json");
+                FileOutputStream fos = new FileOutputStream(path.toFile());
+                byte[] buffer = new byte[1024];
+                int len;
+                while ((len = gis.read(buffer)) > 0) {
+                    fos.write(buffer, 0, len);
+                }
+                fos.close();
 
-            movieIdUtility.setFile(path.toFile());
-            return movieIdUtility.getIds(count);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+                logger.info("Attempting to read IDs from unzipped file...");
+                movieIdUtility.setFile(path.toFile());
+                return movieIdUtility.readIds(count);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 }

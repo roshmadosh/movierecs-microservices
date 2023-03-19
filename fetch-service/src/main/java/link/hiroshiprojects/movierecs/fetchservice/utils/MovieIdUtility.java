@@ -23,8 +23,7 @@ public class MovieIdUtility {
         this.file = file;
     }
 
-
-    public List<Long> getIds(long count) {
+    public List<Long> readIds(long count) {
         if (file == null) {
             throw new IllegalStateException("File must be set using .setFile() before calling .getIds()");
         }
