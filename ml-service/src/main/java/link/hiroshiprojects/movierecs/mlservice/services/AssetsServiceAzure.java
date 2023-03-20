@@ -1,13 +1,15 @@
 package link.hiroshiprojects.movierecs.mlservice.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.MappingIterator;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.csv.CsvMapper;
-import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import link.hiroshiprojects.movierecs.mlservice.models.Genres;
 import link.hiroshiprojects.movierecs.mlservice.models.GenresObject;
 import link.hiroshiprojects.movierecs.mlservice.models.MovieDetails;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +20,16 @@ import org.springframework.util.StreamUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AssetsServiceAzure implements AssetsService {
     private final Logger logger = LoggerFactory.getLogger(AssetsServiceAzure.class);
-    @Value("azure-blob://datasets/details.csv")
+    @Value("azure-blob://datasets/details.json")
     private Resource detailsBlob;
     @Value("azure-blob://datasets/genres.json")
     private Resource genresBlob;
@@ -34,33 +38,32 @@ public class AssetsServiceAzure implements AssetsService {
 
     @Override
     public List<MovieDetails> getMovieDetails(int count) {
-        List<MovieDetails> details = new LinkedList<>();
-        CsvMapper mapper = new CsvMapper();
-        CsvSchema schema = CsvSchema.builder()
-                .addColumn("id")
-                .addColumn("title")
-                .addColumn("overview")
-                .addColumn("popularity")
-                .addColumn("posterPath")
-                .build();
-
+//        List<MovieDetails> details = new LinkedList<>();
+//        CsvMapper mapper = new CsvMapper();
+//        mapper.enable(CsvParser.Feature.WRAP_AS_ARRAY);
+//        CsvSchema schema = CsvSchema.builder()
+//                .addColumn("id")
+//                .addColumn("title")
+//                .addColumn("overview")
+//                .addColumn("genres")
+//                .addColumn("popularity")
+//                .addColumn("posterPath")
+//                .build();
+        List<MovieDetails> results = new LinkedList<>();
+        JSONParser parser = new JSONParser();
         // map fetched csv to object, add to results list
-        try(MappingIterator<MovieDetails> it = mapper.readerFor(MovieDetails.class)
-                .with(schema)
-                .readValues(detailsBlob.getInputStream())) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(detailsBlob.getInputStream()))) {
+            Object obj = parser.parse(reader);
+            JSONArray movieList = (JSONArray) obj;
 
-           int iter = 0;
-           while (it.hasNextValue() && iter < count) {
-               MovieDetails value = it.nextValue();
-               details.add(value);
-               iter++;
-
-               logger.info("Processing " + value.getTitle() + "...");
-           }
-           logger.info("Details successfullly retrieved. Count: " + count);
-           return details;
-
+            for (Object movie: movieList) {
+               results.add(mapper.readValue(movie.toString(), MovieDetails.class));
+            }
+            logger.info(results.get(0).toString());
+            return results;
         } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ParseException e) {
             throw new RuntimeException(e);
         }
     }

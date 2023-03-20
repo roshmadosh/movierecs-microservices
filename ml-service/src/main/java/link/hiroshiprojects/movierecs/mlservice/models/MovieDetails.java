@@ -4,14 +4,15 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.net.URI;
+import java.util.List;
 
 @Getter @Setter @ToString
 public class MovieDetails {
     private long id;
     private String title;
     private String overview;
-    private double  popularity;
+    private List<GenresObject> genres;
+    private double popularity;
     private String posterPath;
 }
 

@@ -1,6 +1,7 @@
 package link.hiroshiprojects.movierecs.fetchservice.services;
 
 import link.hiroshiprojects.movierecs.fetchservice.models.MovieInfo;
+import org.json.simple.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +22,7 @@ public class MovieInfoServiceImpl implements MovieInfoService {
     private String HOST;
     @Value("${TMDB_API_KEY}")
     private String API_KEY;
-    @Value("azure-blob://datasets/details.csv")
+    @Value("azure-blob://datasets/details.json")
     private Resource blobFile;
 
     private RestTemplate restTemplate;
@@ -55,6 +56,7 @@ public class MovieInfoServiceImpl implements MovieInfoService {
         }
 
         // resolve futures
+        logger.info("Resolving futures...");
         List<MovieInfo> details = futures.stream().map(future -> {
             try {
                 return future.get();
@@ -71,20 +73,16 @@ public class MovieInfoServiceImpl implements MovieInfoService {
 
     @Override
     public void saveMovieDetails(List<MovieInfo> movieInfos) {
-        List<String> movieStrings = movieInfos.stream().map(info -> info.genereateCsvString())
-                .collect(Collectors.toList());
+        JSONArray moviesList = new JSONArray();
+        movieInfos.stream().forEach(info ->  moviesList.add(info.toJSONObject()));
 
-        logger.info("Initiating creation and persistence of " + "details.csv...");
+        logger.info("Initiating creation and persistence of " + "details.json...");
         try (BufferedWriter writer = new BufferedWriter(
                 new OutputStreamWriter(((WritableResource) blobFile).getOutputStream()))) {
-//           writer.write(MovieInfo.generateCsvStringHeader());
+            writer.write(moviesList.toJSONString());
+            writer.flush();
 
-           for (String row: movieStrings) {
-               writer.newLine();
-               writer.write(row);
-           }
-
-           logger.info("Successfully saved " + "details.csv" + " to Azure!");
+           logger.info("Successfully saved " + "details.json" + " to Azure!");
 
         } catch (IOException e) {
             throw new RuntimeException(e);

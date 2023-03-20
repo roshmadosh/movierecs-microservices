@@ -14,7 +14,6 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/api/v1/fetch/movie-info", produces = "application/json")
 public class MovieInfoResource {
-
     @Value("${source.url}")
     String url;
 
