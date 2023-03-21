@@ -22,8 +22,8 @@ public class AssetsResource {
 
     @GetMapping("/details")
     public List<MovieDetails> getMovieDetails(@RequestParam int count) {
-        if (count > 20_000) {
-            throw new RuntimeException("Only 20,000 movies available.");
+        if (count > 10_000) {
+            throw new RuntimeException("Only 10,000 movies available.");
         }
         return assetsService.getMovieDetails(count);
     }

@@ -38,17 +38,6 @@ public class AssetsServiceAzure implements AssetsService {
 
     @Override
     public List<MovieDetails> getMovieDetails(int count) {
-//        List<MovieDetails> details = new LinkedList<>();
-//        CsvMapper mapper = new CsvMapper();
-//        mapper.enable(CsvParser.Feature.WRAP_AS_ARRAY);
-//        CsvSchema schema = CsvSchema.builder()
-//                .addColumn("id")
-//                .addColumn("title")
-//                .addColumn("overview")
-//                .addColumn("genres")
-//                .addColumn("popularity")
-//                .addColumn("posterPath")
-//                .build();
         List<MovieDetails> results = new LinkedList<>();
         JSONParser parser = new JSONParser();
         // map fetched csv to object, add to results list
