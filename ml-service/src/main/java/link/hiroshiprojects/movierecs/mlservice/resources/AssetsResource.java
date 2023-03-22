@@ -3,10 +3,7 @@ package link.hiroshiprojects.movierecs.mlservice.resources;
 import link.hiroshiprojects.movierecs.mlservice.models.GenresObject;
 import link.hiroshiprojects.movierecs.mlservice.models.MovieDetails;
 import link.hiroshiprojects.movierecs.mlservice.services.AssetsService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,9 +24,14 @@ public class AssetsResource {
         }
         return assetsService.getMovieDetails(count);
     }
+    @GetMapping("/details/{id}")
+    public MovieDetails getMovieById(@PathVariable long id) {
+        return assetsService.getMovieById(id);
+    }
 
     @GetMapping("/genres")
     public List<GenresObject> getMovieGenres() {
         return assetsService.getGenres();
     }
+
 }

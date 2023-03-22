@@ -10,4 +10,6 @@ public interface AssetsService {
     public List<MovieDetails> getMovieDetails(int count);
 
     public List<GenresObject> getGenres();
+
+    public MovieDetails getMovieById(long id);
 }

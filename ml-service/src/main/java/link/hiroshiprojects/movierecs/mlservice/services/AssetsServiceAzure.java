@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AssetsServiceAzure implements AssetsService {
@@ -73,5 +74,13 @@ public class AssetsServiceAzure implements AssetsService {
            e.printStackTrace();
        }
        return null;
+    }
+
+    @Override
+    public MovieDetails getMovieById(long id) {
+        List<MovieDetails> movies = getMovieDetails(10_000);
+        Optional<MovieDetails> query =  movies.stream().filter(movie -> movie.getId() == id)
+                .findFirst();
+        return query.orElse(null);
     }
 }

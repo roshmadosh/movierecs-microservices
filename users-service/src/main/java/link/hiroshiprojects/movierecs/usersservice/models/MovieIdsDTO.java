@@ -4,9 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter @Setter @ToString
-public class GenresObject {
-    private long id;
-    private String name;
-}
+import java.io.Serializable;
+import java.util.List;
 
+@Getter @Setter @ToString
+public class MovieIdsDTO implements Serializable {
+    private List<MovieId> ids;
+}
