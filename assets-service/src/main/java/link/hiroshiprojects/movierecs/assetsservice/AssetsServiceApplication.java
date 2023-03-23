@@ -1,11 +1,10 @@
-package link.hiroshiprojects.movierecs.mlservice;
+package link.hiroshiprojects.movierecs.assetsservice;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -17,7 +16,8 @@ import java.util.List;
 
 @SpringBootApplication
 @EnableJpaRepositories
-public class MlServiceApplication {
+public class AssetsServiceApplication {
+
 	@Bean
 	public ObjectMapper objectMapper() {
 		ObjectMapper mapper = new ObjectMapper();
@@ -26,6 +26,7 @@ public class MlServiceApplication {
 
 		return mapper;
 	}
+
 
 	@Bean
 	public RestTemplate restTemplate() {
@@ -41,8 +42,9 @@ public class MlServiceApplication {
 		return  restTemplate;
 	}
 
+
 	public static void main(String[] args) {
-		SpringApplication.run(MlServiceApplication.class, args);
+		SpringApplication.run(AssetsServiceApplication.class, args);
 	}
 
 }

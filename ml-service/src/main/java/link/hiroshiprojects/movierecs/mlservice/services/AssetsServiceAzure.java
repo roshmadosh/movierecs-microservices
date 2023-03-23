@@ -35,7 +35,7 @@ public class AssetsServiceAzure implements AssetsService {
     private ObjectMapper mapper;
 
     @Override
-    public List<MovieDetails> getMovieDetails(int count) {
+    public List<MovieDetails> getMovieDetails() {
         List<MovieDetails> results = new LinkedList<>();
         JSONParser parser = new JSONParser();
         // map fetched csv to object, add to results list
@@ -75,7 +75,7 @@ public class AssetsServiceAzure implements AssetsService {
 
     @Override
     public MovieDetails getMovieById(long id) {
-        List<MovieDetails> movies = getMovieDetails(10_000);
+        List<MovieDetails> movies = getMovieDetails();
         Optional<MovieDetails> query =  movies.stream().filter(movie -> movie.getId() == id)
                 .findFirst();
         return query.orElse(null);

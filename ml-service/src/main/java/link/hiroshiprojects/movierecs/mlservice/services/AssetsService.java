@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface AssetsService {
 
-    public List<MovieDetails> getMovieDetails(int count);
+    public List<MovieDetails> getMovieDetails();
 
     public List<GenresObject> getGenres();
 
