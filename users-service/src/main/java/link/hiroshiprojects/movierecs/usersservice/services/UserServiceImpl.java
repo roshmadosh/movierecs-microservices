@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public AppUser addMoviesToFavorites(long userId, List<MovieId> movieIds) {
         for (MovieId obj: movieIds) {
-            if (mlClient.getUser(obj.getId()) == null) {
+            if (mlClient.getDetails(obj.getId()) == null) {
                throw new RuntimeException("MovieID " + obj.getId() + " not found.");
             }
         }

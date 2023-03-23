@@ -5,8 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Primary;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -18,13 +16,10 @@ import java.util.List;
 import java.util.zip.GZIPInputStream;
 
 @Service
-@Primary
 public class MovieIdServiceAzure implements MovieIdService {
     private final Logger logger = LoggerFactory.getLogger(MovieIdServiceAzure.class);
     @Value("${ids.url}")
     private String url;
-    @Value("azure-blob://datasets/movieids.json.gz")
-    private Resource blobFile;
     @Autowired
     private RestTemplate restTemplate;
     private MovieIdUtility movieIdUtility;
@@ -43,6 +38,7 @@ public class MovieIdServiceAzure implements MovieIdService {
                 FileOutputStream fos = new FileOutputStream(path.toFile());
                 byte[] buffer = new byte[1024];
                 int len;
+                logger.info("Writing buffer to temp file...");
                 while ((len = gis.read(buffer)) > 0) {
                     fos.write(buffer, 0, len);
                 }

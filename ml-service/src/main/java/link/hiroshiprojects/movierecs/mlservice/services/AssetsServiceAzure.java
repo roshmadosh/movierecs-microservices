@@ -1,8 +1,6 @@
 package link.hiroshiprojects.movierecs.mlservice.services;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import link.hiroshiprojects.movierecs.mlservice.models.Genres;
 import link.hiroshiprojects.movierecs.mlservice.models.GenresObject;
@@ -48,7 +46,6 @@ public class AssetsServiceAzure implements AssetsService {
             for (Object movie: movieList) {
                results.add(mapper.readValue(movie.toString(), MovieDetails.class));
             }
-            logger.info(results.get(0).toString());
             return results;
         } catch (IOException e) {
             throw new RuntimeException(e);

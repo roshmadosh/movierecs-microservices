@@ -2,6 +2,7 @@ package link.hiroshiprojects.movierecs.fetchservice.services;
 
 import link.hiroshiprojects.movierecs.fetchservice.models.Genres;
 import link.hiroshiprojects.movierecs.fetchservice.models.GenresObject;
+import link.hiroshiprojects.movierecs.fetchservice.repositories.GenreRepository;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,11 +26,13 @@ public class GenresServiceImpl implements GenresService {
     private String KEY;
     @Value("${source.url}")
     private String HOST;
+    private GenreRepository genreRepository;
 
     private final RestTemplate restTemplate;
     private final Logger logger = LoggerFactory.getLogger(GenresService.class);
 
-    public GenresServiceImpl(RestTemplate restTemplate) {
+    public GenresServiceImpl(GenreRepository genreRepository, RestTemplate restTemplate) {
+        this.genreRepository = genreRepository;
         this.restTemplate = restTemplate;
     }
 
@@ -44,23 +47,9 @@ public class GenresServiceImpl implements GenresService {
 
     @Override
     public void saveGenres(List<GenresObject> genres) {
-       logger.info("Initiating creation and persistence of genres.json...");
-       List<JSONObject> genresJson = new LinkedList<>();
-       for (GenresObject genre: genres) {
-           JSONObject jsonObject = new JSONObject();
-           jsonObject.put("id", genre.getId());
-           jsonObject.put("name", genre.getName());
-           genresJson.add(jsonObject);
-       }
-       JSONObject json = new JSONObject();
-       json.put("genres", genresJson);
+        logger.info("Saving genres to database...");
+        genreRepository.saveAll(genres);
+        logger.info("Genres successfully saved to database!");
 
-       try(BufferedWriter writer = new BufferedWriter(
-               new OutputStreamWriter(((WritableResource) blobFile).getOutputStream()))) {
-           writer.write(json.toJSONString());
-       } catch (IOException e) {
-           throw new RuntimeException(e);
-       }
-       logger.info("genres.json saved to Azure!");
     }
 }

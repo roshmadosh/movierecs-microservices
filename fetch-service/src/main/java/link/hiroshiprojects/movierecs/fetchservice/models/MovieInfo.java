@@ -1,5 +1,6 @@
 package link.hiroshiprojects.movierecs.fetchservice.models;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -8,12 +9,17 @@ import org.json.simple.JSONObject;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Entity
+@Table(name = "movie_details")
 @Getter @Setter @ToString
 public class MovieInfo {
     private static final String CSV_DELIMTIER = ",";
+    @Id
     private long id;
     private String title;
+    @Column(columnDefinition = "TEXT")
     private String overview;
+    @ManyToMany
     private List<GenresObject> genres;
     private double  popularity;
     private String posterPath;
