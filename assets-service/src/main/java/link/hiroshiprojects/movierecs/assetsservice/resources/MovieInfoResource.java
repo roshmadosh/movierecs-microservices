@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping(value = "/api/v1/assets/movie-info", produces = "application/json")
+@RequestMapping(value = "/api/v1/assets/details", produces = "application/json")
 public class MovieInfoResource {
     @Value("${source.url}")
     String url;
