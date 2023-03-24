@@ -9,5 +9,6 @@ import java.util.List;
 
 @Getter @Setter @ToString
 public class MovieIdsDTO implements Serializable {
-    private List<MovieId> ids;
+    private long userId;
+    private List<MovieId> movieIds;
 }

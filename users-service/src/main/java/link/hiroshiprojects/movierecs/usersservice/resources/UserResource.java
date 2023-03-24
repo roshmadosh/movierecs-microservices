@@ -33,10 +33,24 @@ public class UserResource {
         }
     }
 
-    @PostMapping("/{userId}/favorites")
-    public AppUser addMovieToFavorites(@PathVariable long userId,
-                                       @RequestBody MovieIdsDTO movieIdsDTO) {
-        System.out.println(movieIdsDTO);
-        return userService.addMoviesToFavorites(userId, movieIdsDTO.getIds());
+    /**
+     * Add movies to a user's favorites.
+     * @param movieIdsDTO
+     * Has two fields: "user_id" and "ids".
+     * "ids" accepts a collection of MovieDetail
+     *                    objects. E.g. request body:
+     *                    {
+     *                      "userId": 1,
+     *                      "ids": [
+     *                          {
+     *                              // fields for MovieDetails object
+     *                          }
+     *                      ]
+     *                    }
+     * @return The user with the updated favorites field.
+     */
+    @PostMapping("/favorites")
+    public AppUser addMovieToFavorites(@RequestBody MovieIdsDTO movieIdsDTO) {
+        return userService.addMoviesToFavorites(movieIdsDTO.getUserId(), movieIdsDTO.getMovieIds());
     }
 }

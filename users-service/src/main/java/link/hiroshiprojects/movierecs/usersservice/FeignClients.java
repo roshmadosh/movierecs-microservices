@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 public class FeignClients {
 
-    @FeignClient("ml-service")
+    @FeignClient("assets-service")
     public interface MlClient {
 
-       @GetMapping("api/v1/ml/assets/details/{id}")
+       @GetMapping("api/v1/assets/details/{id}")
        MovieId getDetails(@PathVariable long id);
     }
 }

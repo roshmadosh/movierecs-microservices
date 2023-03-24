@@ -2,6 +2,7 @@
 
 Spring Boot microservices for a movie recommendations application.  
 
+**Note**: All POST requests must be in snake case.
 ### Service Discovery Microservice  
 
 `discovery-service/` is implemented as a [Spring Cloud Netflix](https://cloud.spring.io/spring-cloud-netflix/reference/html/) Eureka server. If running locally, you must run this application first.  
