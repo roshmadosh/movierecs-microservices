@@ -3,14 +3,15 @@ package link.hiroshiprojects.movierecs.usersservice.models;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.LinkedList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+@Entity
+@Table(name = "app_users")
 @Getter
 @Setter
 @ToString
-@Entity
-@Table(name = "app_users")
 public class AppUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,11 +20,9 @@ public class AppUser {
     @Column(unique = true)
     private String email;
 
-    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "usersFavorited")
-    private List<MovieId> favorites = new LinkedList<>();
+    private Set<Long> favorites = new HashSet<>();
 
-    public void addMovieIdsToFavorites(List<MovieId> movieIds) {
-        movieIds.stream().forEach(movie -> movie.getUsersFavorited().add(this));
+    public void addMovieIdsToFavorites(List<Long> movieIds) {
         favorites.addAll(movieIds);
     }
 }

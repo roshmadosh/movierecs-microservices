@@ -12,7 +12,8 @@ public class AppSecurityConfig {
         http.authorizeHttpRequests()
                 .anyRequest().authenticated()
                 .and()
-                .oauth2Login();
+                .oauth2Login()
+                .defaultSuccessUrl("http://localhost:8085/api/v1/auth/login");
 
         return http.build();
     }

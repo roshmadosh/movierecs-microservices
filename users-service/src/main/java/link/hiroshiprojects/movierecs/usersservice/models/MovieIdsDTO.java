@@ -10,5 +10,5 @@ import java.util.List;
 @Getter @Setter @ToString
 public class MovieIdsDTO implements Serializable {
     private long userId;
-    private List<MovieId> movieIds;
+    private List<Long> movieIds;
 }

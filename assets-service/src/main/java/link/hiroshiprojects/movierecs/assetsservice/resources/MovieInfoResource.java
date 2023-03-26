@@ -37,16 +37,8 @@ public class MovieInfoResource {
      * Find movie by ID from database.
      */
     @GetMapping("/{movieId}")
-    public ResponseEntity<Object> getMovieById(@PathVariable(name = "movieId") long movieId) {
-        MovieInfo movie = movieInfoService.getById(movieId);
-        if (movie == null) {
-            Map<String, Object> resp = new HashMap<>();
-            resp.put("success", false);
-            resp.put("message", "Movie with ID " + movieId + " not found.");
-            return ResponseEntity.badRequest().body(resp);
-        }
-        return ResponseEntity.ok().body(movie);
-
+    public MovieInfo getMovieById(@PathVariable(name = "movieId") long movieId) {
+        return movieInfoService.getById(movieId);
     }
 
     /**

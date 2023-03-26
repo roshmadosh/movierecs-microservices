@@ -1,7 +1,6 @@
 package link.hiroshiprojects.movierecs.usersservice.resources;
 
 import link.hiroshiprojects.movierecs.usersservice.models.AppUser;
-import link.hiroshiprojects.movierecs.usersservice.models.MovieId;
 import link.hiroshiprojects.movierecs.usersservice.models.MovieIdsDTO;
 import link.hiroshiprojects.movierecs.usersservice.services.UserService;
 import org.springframework.http.ResponseEntity;

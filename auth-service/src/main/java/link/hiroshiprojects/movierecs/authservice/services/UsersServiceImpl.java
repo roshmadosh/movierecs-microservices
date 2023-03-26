@@ -13,9 +13,9 @@ public class UsersServiceImpl implements UsersService {
     @Autowired
     private RestTemplate restTemplate;
     @Override
-    public long registerUser(String email) {
+    public AppUser registerUser(String email) {
         String url = discoveryClient.getNextServerFromEureka("USERS-SERVICE", false).getHomePageUrl();
         AppUser user = restTemplate.postForObject(url + "/api/v1/users", new AppUser(email), AppUser.class);
-        return user.getId();
+        return user;
     }
 }
