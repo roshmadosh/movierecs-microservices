@@ -1,6 +1,7 @@
 package link.hiroshiprojects.movierecs.usersservice.resources;
 
 import link.hiroshiprojects.movierecs.usersservice.models.AppUser;
+import link.hiroshiprojects.movierecs.usersservice.models.MovieDetails;
 import link.hiroshiprojects.movierecs.usersservice.models.MovieIdsDTO;
 import link.hiroshiprojects.movierecs.usersservice.services.UserService;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,16 @@ public class UserResource {
     public List<AppUser> getAllUsers() {
         return userService.getAll();
     }
+
+    @GetMapping("/user")
+    public AppUser getUserByEmail(@RequestParam(name = "email") String email) {
+        AppUser user = userService.getUserByEmail(email);
+        if (user == null) {
+            throw new RuntimeException("User '" + email + "' not found.");
+        }
+        return user;
+    }
+
     @PostMapping
     public ResponseEntity<AppUser> saveUser(@RequestBody AppUser appUser) {
         try {

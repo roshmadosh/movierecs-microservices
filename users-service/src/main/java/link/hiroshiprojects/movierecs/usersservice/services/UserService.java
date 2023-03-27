@@ -9,4 +9,7 @@ public interface UserService {
     List<AppUser> getAll();
     AppUser save(AppUser appUser);
     AppUser addMoviesToFavorites(long userId, List<Long> movieIds);
+
+    AppUser getUserByEmail(String email);
+
 }

@@ -3,6 +3,7 @@ package link.hiroshiprojects.movierecs.authservice.resources;
 import link.hiroshiprojects.movierecs.authservice.models.AppUser;
 import link.hiroshiprojects.movierecs.authservice.services.UsersService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,9 +23,25 @@ public class LoginResource {
     }
 
 
+    /**
+     * Intended to be entry-point for outside requests. Logs the user in and
+     * "registers" the user to Users service if user is not found in the Users
+     * service database.
+     */
     @GetMapping("/login")
-    public AppUser getLoggedIn(@AuthenticationPrincipal OAuth2User principal) {
-        AppUser user = usersService.registerUser(principal.getAttribute("email"));
+    public AppUser login(OAuth2AuthenticationToken token) {
+        AppUser user = usersService.registerUser(token.getPrincipal().getAttribute("email"));
+        return user;
+    }
+
+
+    @GetMapping("/user")
+    public AppUser getUser(@AuthenticationPrincipal OAuth2User principal) {
+        String email = principal.getAttribute("email");
+        AppUser user = usersService.getUserByEmail(email);
+        if (user == null) {
+            throw new RuntimeException("User '" + email + "' not found.");
+        }
         return user;
     }
 

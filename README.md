@@ -25,3 +25,7 @@ Note that this service might not be able to read environment variables via your 
 
 `users-microservice` is the interface for managing user data, including "favorite" movies used for performing the personalized recommendation.  
 
+### Auth Microservice  
+
+`auth-microservice` will be the public-facing service. It will act as an OAuth2 resource server, and will require requests from our UI to contain an access token from an authorization server (most likely Google or Github).  
+![oauth-role-table](https://lucid.app/publicSegments/view/99c80462-e3de-48fc-bff2-f41ec0c6cd0d/image.png)  

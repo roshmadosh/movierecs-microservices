@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public AppUser save(AppUser appUser) {
-        AppUser query = userRepository.findByEmail(appUser.getEmail());
+        AppUser query = userRepository.findByEmail(appUser.getEmail()).orElse(null);
         if (query != null) {
             return query;
         }
@@ -51,4 +51,11 @@ public class UserServiceImpl implements UserService {
         user.addMovieIdsToFavorites(movieIds);
         return userRepository.save(user);
     }
+
+    @Override
+    public AppUser getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElse(null);
+    }
+
+
 }
