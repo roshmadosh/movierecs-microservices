@@ -1,0 +1,31 @@
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:21.0.1
+    container_name: keycloak
+    ports:
+      - 9000:8080
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=password
+      - DB_VENDOR=postgres
+      - DB_ADDR=postgres
+      - DB_DATABASE=keycloak
+      - DB_USER=keycloak
+      - DB_PASSWORD=password
+    command: start-dev
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres:14.7-alpine
+    container_name: postgres
+    ports:
+      - 5433:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres:/var/lib/postgresql/data
+      - ./infra/postgres:/docker-entrypoint-initdb.d
+
+volumes:
+  postgres:
