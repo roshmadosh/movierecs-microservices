@@ -12,20 +12,22 @@ services:
       - DB_DATABASE=keycloak
       - DB_USER=keycloak
       - DB_PASSWORD=password
-    command: start-dev
+    volumes:
+      - ./realm-export.json:/opt/keycloak/data/import/realm-export.json
     depends_on:
       - postgres
+    command: start-dev --import-realm
   postgres:
     image: postgres:14.7-alpine
     container_name: postgres
     ports:
       - 5433:5432
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=keycloak
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=keycloak
     volumes:
       - postgres:/var/lib/postgresql/data
-      - ./infra/postgres:/docker-entrypoint-initdb.d
 
 volumes:
   postgres:
