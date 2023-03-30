@@ -1,17 +1,23 @@
 package link.hiroshiprojects.movierecs.usersservice.resources;
 
 import link.hiroshiprojects.movierecs.usersservice.models.AppUser;
-import link.hiroshiprojects.movierecs.usersservice.models.MovieDetails;
 import link.hiroshiprojects.movierecs.usersservice.models.MovieIdsDTO;
 import link.hiroshiprojects.movierecs.usersservice.services.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/users")
 public class UserResource {
+    private final Logger logger = LoggerFactory.getLogger(UserResource.class);
     private UserService userService;
 
     public UserResource(UserService userService) {
@@ -19,12 +25,15 @@ public class UserResource {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('admin')")
     public List<AppUser> getAllUsers() {
         return userService.getAll();
     }
 
     @GetMapping("/user")
-    public AppUser getUserByEmail(@RequestParam(name = "email") String email) {
+    @PreAuthorize("hasRole('admin') or #email == #jwt.claims['email']")
+    public AppUser getUserByEmail(@RequestParam(name = "email") String email,
+                                  @AuthenticationPrincipal Jwt jwt) {
         AppUser user = userService.getUserByEmail(email);
         if (user == null) {
             throw new RuntimeException("User '" + email + "' not found.");
@@ -32,7 +41,9 @@ public class UserResource {
         return user;
     }
 
+
     @PostMapping
+    @PreAuthorize("hasRole('admin')")
     public ResponseEntity<AppUser> saveUser(@RequestBody AppUser appUser) {
         try {
             AppUser user = userService.save(appUser);
@@ -60,7 +71,10 @@ public class UserResource {
      * @return The user with the updated favorites field.
      */
     @PostMapping("/favorites")
-    public AppUser addMovieToFavorites(@RequestBody MovieIdsDTO movieIdsDTO) {
-        return userService.addMoviesToFavorites(movieIdsDTO.getUserId(), movieIdsDTO.getMovieIds());
+    @PreAuthorize("hasRole('admin') or #movieIdsDTO.email == #jwt.claims['email']")
+    public AppUser addMovieToFavorites(@RequestBody MovieIdsDTO movieIdsDTO,
+                                       @AuthenticationPrincipal Jwt jwt)
+            throws UserPrincipalNotFoundException {
+        return userService.addMoviesToFavorites(movieIdsDTO.getEmail(), movieIdsDTO.getMovieIds());
     }
 }

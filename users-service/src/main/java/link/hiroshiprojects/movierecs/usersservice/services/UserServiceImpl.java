@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.nio.file.attribute.UserPrincipalNotFoundException;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -40,14 +42,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public AppUser addMoviesToFavorites(long userId, List<Long> movieIds) {
+    public AppUser addMoviesToFavorites(String email, Collection<Long> movieIds)
+            throws UserPrincipalNotFoundException {
         for (long id: movieIds) {
             MovieDetails details = mlClient.getDetails(id);
             if (details == null) {
                throw new RuntimeException("MovieID " + id + " not found.");
             }
         }
-        AppUser user = userRepository.getReferenceById(userId);
+        AppUser user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserPrincipalNotFoundException(email));
         user.addMovieIdsToFavorites(movieIds);
         return userRepository.save(user);
     }

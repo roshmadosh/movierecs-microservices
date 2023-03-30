@@ -5,10 +5,10 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 
 @Getter @Setter @ToString
 public class MovieIdsDTO implements Serializable {
-    private long userId;
-    private List<Long> movieIds;
+    private String email;
+    private Set<Long> movieIds;
 }

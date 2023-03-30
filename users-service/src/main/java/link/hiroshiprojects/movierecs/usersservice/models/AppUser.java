@@ -3,9 +3,11 @@ package link.hiroshiprojects.movierecs.usersservice.models;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "app_users")
@@ -22,7 +24,7 @@ public class AppUser {
 
     private Set<Long> favorites = new HashSet<>();
 
-    public void addMovieIdsToFavorites(List<Long> movieIds) {
+    public void addMovieIdsToFavorites(Collection<Long> movieIds) {
         favorites.addAll(movieIds);
     }
 }
