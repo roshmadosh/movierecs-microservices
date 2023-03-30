@@ -5,7 +5,6 @@ import link.hiroshiprojects.movierecs.usersservice.models.MovieIdsDTO;
 import link.hiroshiprojects.movierecs.usersservice.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -24,12 +23,19 @@ public class UserResource {
         this.userService = userService;
     }
 
+    /**
+     * Get all users.
+     */
     @GetMapping
     @PreAuthorize("hasRole('admin')")
     public List<AppUser> getAllUsers() {
         return userService.getAll();
     }
 
+    /**
+     * Gets user details. The user making the request must either be an admin or
+     * a user asking for his own details.
+     */
     @GetMapping("/user")
     @PreAuthorize("hasRole('admin') or #email == #jwt.claims['email']")
     public AppUser getUserByEmail(@RequestParam(name = "email") String email,
@@ -42,33 +48,24 @@ public class UserResource {
     }
 
 
+    /**
+     * Saves a new user.
+     * e.g. request body:
+     *      { "email": "mynewuser@email.com" }
+     */
     @PostMapping
     @PreAuthorize("hasRole('admin')")
-    public ResponseEntity<AppUser> saveUser(@RequestBody AppUser appUser) {
-        try {
-            AppUser user = userService.save(appUser);
-            return ResponseEntity.ok().body(user);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.badRequest().body(null);
-        }
+    public AppUser saveUser(@RequestBody AppUser appUser) {
+        return userService.save(appUser);
     }
 
     /**
      * Add movies to a user's favorites.
-     * @param movieIdsDTO
-     * Has two fields: "user_id" and "ids".
-     * "ids" accepts a collection of MovieDetail
-     *                    objects. E.g. request body:
-     *                    {
-     *                      "userId": 1,
-     *                      "ids": [
-     *                          {
-     *                              // fields for MovieDetails object
-     *                          }
-     *                      ]
-     *                    }
-     * @return The user with the updated favorites field.
+     * e.g. request body:
+     *      {
+     *          "email": "user@email.com",
+     *          "movieIds": [1,2,3]
+     *      }
      */
     @PostMapping("/favorites")
     @PreAuthorize("hasRole('admin') or #movieIdsDTO.email == #jwt.claims['email']")
