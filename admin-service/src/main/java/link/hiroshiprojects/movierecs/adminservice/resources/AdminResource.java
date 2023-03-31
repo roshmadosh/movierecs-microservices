@@ -5,6 +5,7 @@ import link.hiroshiprojects.movierecs.adminservice.services.UsersService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/api/v1/admin")
+@PreAuthorize("hasRole('realm-admin')")
 public class AdminResource {
     private final Logger logger = LoggerFactory.getLogger(AdminResource.class);
     private final UsersService usersService;
@@ -39,7 +41,7 @@ public class AdminResource {
 
         // check if user exists in auth server
         if (!usersService.emailExists(adminToken, email)) {
-            logger.warn("USER NOT FOUND: " + email);
+            logger.warn("Account not found in auth server: " + email);
             return ResponseEntity.badRequest().body(null);
         }
 

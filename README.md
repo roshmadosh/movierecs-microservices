@@ -25,8 +25,8 @@ Note that this service might not be able to read environment variables via your 
 
 `users-microservice` is the interface for managing user data, including "favorite" movies used for performing the personalized recommendation.  
 
-### Gateway Microservice
+### Admin Microservice
 
-`gateway-microservice` will be the public-facing service. Endpoints will be protected using OAuth. Keycloak server is serving role as the authorization server and identity provider.  
+`admin-microservice` is a secured endpoint that require
 
 Running `docker-compose up` should start a PostgreSQL and KeyCloak container. The PG container will have a volume to persist users between container runs, and the KC container imports a pre-exported realm from the file `realm-export.json`.
