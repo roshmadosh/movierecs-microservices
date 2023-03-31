@@ -3,9 +3,12 @@ package link.hiroshiprojects.movierecs.adminservice;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import link.hiroshiprojects.movierecs.adminservice.security.HeaderRequestInterceptor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
@@ -36,8 +39,15 @@ public class AdminServiceApplication {
 		messageConverters.add(jsonMessageConverter);
 		restTemplate.setMessageConverters(messageConverters);
 
+		// interceptor to add accept header on every request
+		List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>();
+		interceptors.add(new HeaderRequestInterceptor("Accept", MediaType.APPLICATION_JSON_VALUE));
+
+		restTemplate.setInterceptors(interceptors);
+
 		return  restTemplate;
 	}
+
 	public static void main(String[] args) {
 		SpringApplication.run(AdminServiceApplication.class, args);
 	}

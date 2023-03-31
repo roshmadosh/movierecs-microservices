@@ -5,4 +5,5 @@ import link.hiroshiprojects.movierecs.adminservice.models.AppUser;
 public interface UsersService {
     AppUser registerUser(String adminToken, String registerEmail);
 
+    boolean emailExists(String adminToken, String email);
 }

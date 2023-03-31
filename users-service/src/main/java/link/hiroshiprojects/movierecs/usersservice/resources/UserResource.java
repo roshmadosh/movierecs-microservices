@@ -14,7 +14,7 @@ import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/users")
+@RequestMapping(value = "api/v1/users", produces = "application/json")
 public class UserResource {
     private final Logger logger = LoggerFactory.getLogger(UserResource.class);
     private UserService userService;
@@ -37,7 +37,7 @@ public class UserResource {
      * a user asking for his own details.
      */
     @GetMapping("/user")
-    @PreAuthorize("hasRole('admin') or #email == #jwt.claims['email']")
+    @PreAuthorize("hasRole('realm-admin') or #email == #jwt.claims['email']")
     public AppUser getUserByEmail(@RequestParam(name = "email") String email,
                                   @AuthenticationPrincipal Jwt jwt) {
         AppUser user = userService.getUserByEmail(email);
@@ -54,7 +54,7 @@ public class UserResource {
      *      { "email": "mynewuser@email.com" }
      */
     @PostMapping
-    @PreAuthorize("hasRole('admin')")
+    @PreAuthorize("hasRole('realm-admin')")
     public AppUser saveUser(@RequestBody AppUser appUser) {
         return userService.save(appUser);
     }
@@ -68,7 +68,7 @@ public class UserResource {
      *      }
      */
     @PostMapping("/favorites")
-    @PreAuthorize("hasRole('admin') or #movieIdsDTO.email == #jwt.claims['email']")
+    @PreAuthorize("hasRole('realm-admin') or #movieIdsDTO.email == #jwt.claims['email']")
     public AppUser addMovieToFavorites(@RequestBody MovieIdsDTO movieIdsDTO,
                                        @AuthenticationPrincipal Jwt jwt)
             throws UserPrincipalNotFoundException {
