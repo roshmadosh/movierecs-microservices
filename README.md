@@ -27,6 +27,6 @@ Note that this service might not be able to read environment variables via your 
 
 ### Admin Microservice
 
-`admin-microservice` is a secured endpoint that require
+`admin-microservice` is a secured endpoint that includes admin-level endpoints. Used for functions such as adding a user to the Users microservice.
 
 Running `docker-compose up` should start a PostgreSQL and KeyCloak container. The PG container will have a volume to persist users between container runs, and the KC container imports a pre-exported realm from the file `realm-export.json`.

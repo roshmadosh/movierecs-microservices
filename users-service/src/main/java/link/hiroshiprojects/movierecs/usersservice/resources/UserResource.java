@@ -27,7 +27,7 @@ public class UserResource {
      * Get all users.
      */
     @GetMapping
-    @PreAuthorize("hasRole('admin')")
+    @PreAuthorize("hasRole('realm-admin')")
     public List<AppUser> getAllUsers() {
         return userService.getAll();
     }
