@@ -8,5 +8,8 @@ public interface UsersService {
     List<AppUser> getUsers(String adminToken);
     AppUser registerUser(String adminToken, String registerEmail);
 
+    long deleteUser(String adminToken, String deleteEmail);
+
     boolean emailExists(String adminToken, String email);
+
 }

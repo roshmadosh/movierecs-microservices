@@ -1,5 +1,6 @@
 package link.hiroshiprojects.movierecs.usersservice.services;
 
+import jakarta.transaction.Transactional;
 import link.hiroshiprojects.movierecs.usersservice.FeignClients;
 import link.hiroshiprojects.movierecs.usersservice.models.AppUser;
 import link.hiroshiprojects.movierecs.usersservice.models.MovieDetails;
@@ -10,10 +11,10 @@ import org.springframework.web.client.RestTemplate;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
     @Autowired
     private RestTemplate restTemplate;
@@ -59,6 +60,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public AppUser getUserByEmail(String email) {
         return userRepository.findByEmail(email).orElse(null);
+    }
+
+    @Override
+    public long deleteUser(String email) {
+        try {
+            return userRepository.deleteByEmail(email);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 
 

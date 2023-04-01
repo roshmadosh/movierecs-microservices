@@ -11,7 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A service class for using the Users-Service microservice.
@@ -54,6 +56,19 @@ public class UsersServiceImpl implements UsersService {
 
         HttpEntity<AppUser> httpEntity = new HttpEntity<>(user, headers);
         return restTemplate.postForObject(usersServiceURL, httpEntity, AppUser.class);
+    }
+
+    @Override
+    public long deleteUser(String adminToken, String deleteEmail) {
+        logger.info("Attempting to delete user from USERS-SERVICE: " + deleteEmail);
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + adminToken);
+
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("email", deleteEmail);
+
+        HttpEntity<Map<String, String>> request = new HttpEntity<>(requestBody, headers);
+        return restTemplate.exchange(usersServiceURL, HttpMethod.DELETE, request, Long.class).getBody();
     }
 
     @Override

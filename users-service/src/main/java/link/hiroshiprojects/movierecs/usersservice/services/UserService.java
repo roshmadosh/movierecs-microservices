@@ -14,4 +14,6 @@ public interface UserService {
 
     AppUser getUserByEmail(String email);
 
+    long deleteUser(String email);
+
 }

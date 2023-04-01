@@ -11,7 +11,9 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -45,8 +47,13 @@ public class UsersResource {
      * Register a user to the application.
      */
     @PostMapping
-    public ResponseEntity<AppUser> registerUser(@AuthenticationPrincipal Jwt jwt, @RequestBody String email) {
+    public ResponseEntity<AppUser> registerUser(@AuthenticationPrincipal Jwt jwt, @RequestBody Map<String, String> request) {
         String adminToken = jwt.getTokenValue();
+        String email = request.getOrDefault("email", null);
+        if (email == null) {
+            logger.warn("Required request body parameter 'email' missing.");
+            return ResponseEntity.badRequest().body(null);
+        }
 
         // check if user exists in auth server
         if (!usersService.emailExists(adminToken, email)) {
@@ -56,6 +63,39 @@ public class UsersResource {
 
         AppUser user = usersService.registerUser(adminToken, email);
         return ResponseEntity.ok().body(user);
+    }
+
+    /**
+     * Delete a user from the application.
+     */
+    @DeleteMapping
+    public ResponseEntity<Map<String, Object>> deleteUser(@AuthenticationPrincipal Jwt jwt,
+                                                          @RequestBody Map<String, String> request) {
+        String adminToken = jwt.getTokenValue();
+        Map<String, Object> response = new HashMap<>();
+        String email = request.getOrDefault("email", null);
+        if (email == null) {
+            logger.warn("Required request body parameter 'email' missing.");
+            return ResponseEntity.badRequest().body(null);
+        }
+        // check if user exists in auth server
+        if (!usersService.emailExists(adminToken, email)) {
+            String message = "Account not found in auth server: " + email;
+            logger.warn(message);
+            response.put("success", false);
+            response.put("message", message);
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        long userDeleted = usersService.deleteUser(adminToken, email);
+        if (userDeleted != 1) {
+            logger.warn("Failed user deletion, returned item: " + userDeleted);
+            response.put("success", false);
+            response.put("message", "unknown error.");
+            return ResponseEntity.badRequest().body(response);
+        }
+        response.put("success", true);
+        return ResponseEntity.ok().body(response);
     }
 
 

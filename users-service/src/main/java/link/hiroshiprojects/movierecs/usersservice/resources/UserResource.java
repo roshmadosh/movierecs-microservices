@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "api/v1/users", produces = "application/json")
@@ -47,7 +48,6 @@ public class UserResource {
         return user;
     }
 
-
     /**
      * Saves a new user.
      * e.g. request body:
@@ -73,5 +73,16 @@ public class UserResource {
                                        @AuthenticationPrincipal Jwt jwt)
             throws UserPrincipalNotFoundException {
         return userService.addMoviesToFavorites(movieIdsDTO.getEmail(), movieIdsDTO.getMovieIds());
+    }
+
+    @DeleteMapping
+    @PreAuthorize("hasRole('realm-admin')")
+    public long deleteUser(@RequestBody Map<String, String> request) {
+        String email = request.getOrDefault("email", null);
+        if (email == null) {
+            logger.warn("User with email '" + email + "' not found.");
+            return 0;
+        }
+        return userService.deleteUser(email);
     }
 }
