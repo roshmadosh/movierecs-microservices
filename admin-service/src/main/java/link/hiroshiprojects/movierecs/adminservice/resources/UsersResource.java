@@ -98,5 +98,4 @@ public class UsersResource {
         return ResponseEntity.ok().body(response);
     }
 
-
 }

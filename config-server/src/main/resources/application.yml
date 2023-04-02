@@ -1,0 +1,18 @@
+server:
+  port: 0
+spring:
+  application:
+    name: config-service
+  cloud:
+    config:
+      discovery:
+        enabled: true
+      server:
+        git:
+          uri: https://github.com/roshmadosh/movierecs-config.git
+          cloneOnStart: true
+          defaultLabel: main
+          searchPaths: '{application}' # this lets the config files be stored in folders by their app-name
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${instanceId:${random.value}}
