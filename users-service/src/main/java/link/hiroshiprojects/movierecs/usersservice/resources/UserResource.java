@@ -28,7 +28,7 @@ public class UserResource {
      * Get all users.
      */
     @GetMapping
-    @PreAuthorize("hasRole('realm-admin')")
+    @PreAuthorize("hasRole('admin')")
     public List<AppUser> getAllUsers() {
         return userService.getAll();
     }
@@ -38,7 +38,7 @@ public class UserResource {
      * a user asking for his own details.
      */
     @GetMapping("/user")
-    @PreAuthorize("hasRole('realm-admin') or #email == #jwt.claims['email']")
+    @PreAuthorize("hasRole('admin') or #email == #jwt.claims['email']")
     public AppUser getUserByEmail(@RequestParam(name = "email") String email,
                                   @AuthenticationPrincipal Jwt jwt) {
         AppUser user = userService.getUserByEmail(email);
@@ -54,7 +54,7 @@ public class UserResource {
      *      { "email": "mynewuser@email.com" }
      */
     @PostMapping
-    @PreAuthorize("hasRole('realm-admin')")
+    @PreAuthorize("hasRole('admin')")
     public AppUser saveUser(@RequestBody AppUser appUser) {
         return userService.save(appUser);
     }
@@ -68,7 +68,7 @@ public class UserResource {
      *      }
      */
     @PostMapping("/favorites")
-    @PreAuthorize("hasRole('realm-admin') or #movieIdsDTO.email == #jwt.claims['email']")
+    @PreAuthorize("hasRole('admin') or #movieIdsDTO.email == #jwt.claims['email']")
     public AppUser addMovieToFavorites(@RequestBody MovieIdsDTO movieIdsDTO,
                                        @AuthenticationPrincipal Jwt jwt)
             throws UserPrincipalNotFoundException {
@@ -76,7 +76,7 @@ public class UserResource {
     }
 
     @DeleteMapping
-    @PreAuthorize("hasRole('realm-admin')")
+    @PreAuthorize("hasRole('admin')")
     public long deleteUser(@RequestBody Map<String, String> request) {
         String email = request.getOrDefault("email", null);
         if (email == null) {

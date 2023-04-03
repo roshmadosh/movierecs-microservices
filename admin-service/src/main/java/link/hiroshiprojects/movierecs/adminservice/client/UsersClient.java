@@ -1,7 +1,5 @@
-package link.hiroshiprojects.movierecs.adminservice.feign;
+package link.hiroshiprojects.movierecs.adminservice.client;
 
-import feign.Headers;
-import feign.Param;
 import link.hiroshiprojects.movierecs.adminservice.models.AppUser;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;

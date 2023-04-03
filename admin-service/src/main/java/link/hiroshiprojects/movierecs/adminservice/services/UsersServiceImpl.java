@@ -1,6 +1,6 @@
 package link.hiroshiprojects.movierecs.adminservice.services;
 
-import link.hiroshiprojects.movierecs.adminservice.feign.UsersClient;
+import link.hiroshiprojects.movierecs.adminservice.client.UsersClient;
 import link.hiroshiprojects.movierecs.adminservice.models.AppUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

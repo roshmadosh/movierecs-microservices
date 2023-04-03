@@ -1,4 +1,4 @@
-package link.hiroshiprojects.movierecs.adminservice.feign;
+package link.hiroshiprojects.movierecs.adminservice.client;
 
 import feign.Logger;
 import org.springframework.context.annotation.Bean;

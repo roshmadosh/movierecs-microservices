@@ -21,7 +21,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/api/v1/admin/users")
-@PreAuthorize("hasRole('realm-admin')")
+@PreAuthorize("hasRole('admin')")
 public class UsersResource {
     private final Logger logger = LoggerFactory.getLogger(UsersResource.class);
     private final UsersService usersService;
