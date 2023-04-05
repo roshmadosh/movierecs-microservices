@@ -5,6 +5,7 @@ import link.hiroshiprojects.movierecs.adminservice.models.AppUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -18,6 +19,8 @@ import java.util.Map;
  */
 @Service
 public class UsersServiceImpl implements UsersService {
+    @Value("${keycloak.server.host}")
+    private String keycloakServerHost;
     @Autowired
     private RestTemplate restTemplate;
 
@@ -58,14 +61,14 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public boolean emailExists(String adminToken, String email) {
-        String authServerURL = "http://localhost:9000";
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + adminToken);
+        headers.set("Content-type", "application/json");
 
         HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
 
         ResponseEntity<Object[]> response = restTemplate.exchange(
-                authServerURL + "/admin/realms/movierecs-realm/users?email=" + email + "&&exact=true",
+                keycloakServerHost + "/admin/realms/movierecs-realm/users?email=" + email + "&&exact=true",
                 HttpMethod.GET, requestEntity, Object[].class);
 
         return response.getBody().length != 0;

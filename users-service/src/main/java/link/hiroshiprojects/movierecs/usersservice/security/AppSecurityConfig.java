@@ -18,7 +18,7 @@ public class AppSecurityConfig {
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new KeycloakRoleConverter());
         http
                 .authorizeHttpRequests()
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
                 .and()
                 .oauth2ResourceServer()
                 .jwt().jwtAuthenticationConverter(jwtAuthenticationConverter);

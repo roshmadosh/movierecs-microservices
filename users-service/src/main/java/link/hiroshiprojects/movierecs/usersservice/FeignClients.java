@@ -10,7 +10,7 @@ public class FeignClients {
     @FeignClient("assets-service")
     public interface MlClient {
 
-       @GetMapping("api/v1/assets/details/{id}")
+       @GetMapping("/details/{id}")
        MovieDetails getDetails(@PathVariable long id);
     }
 }

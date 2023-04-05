@@ -20,7 +20,7 @@ import java.util.Map;
  * A controller for making admin-level requests for the application.
  */
 @RestController
-@RequestMapping("/api/v1/admin/users")
+@RequestMapping("/users")
 @PreAuthorize("hasRole('admin')")
 public class UsersResource {
     private final Logger logger = LoggerFactory.getLogger(UsersResource.class);

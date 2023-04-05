@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping(value = "api/v1/users", produces = "application/json")
+@RequestMapping(produces = "application/json")
 public class UserResource {
     private final Logger logger = LoggerFactory.getLogger(UserResource.class);
     private UserService userService;

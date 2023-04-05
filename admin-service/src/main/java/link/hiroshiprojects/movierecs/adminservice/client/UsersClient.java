@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 
-@FeignClient(name = "users-service", path = "api/v1/users", configuration = FeignConfig.class)
+@FeignClient(name = "users-service", configuration = FeignConfig.class)
 public interface UsersClient {
 
     @GetMapping
