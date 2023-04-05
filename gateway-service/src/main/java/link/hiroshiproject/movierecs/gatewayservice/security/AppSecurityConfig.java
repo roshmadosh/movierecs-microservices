@@ -32,7 +32,7 @@ public class AppSecurityConfig {
                .logout(logout -> logout
                        .logoutHandler(logoutHandler)
                        .logoutSuccessHandler(oidcLogoutSuccessHandler()))
-               .oauth2Login();
+               .oauth2Client();
 
        return http.build();
     }
