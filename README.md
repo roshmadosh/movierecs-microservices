@@ -29,4 +29,5 @@ Note that this service might not be able to read environment variables via your 
 
 `admin-microservice` is a secured endpoint that includes admin-level endpoints. Used for functions such as adding a user to the Users microservice.
 
-Running `docker-compose up` should start a PostgreSQL and KeyCloak container. The PG container will have a volume to persist users between container runs, and the KC container imports a pre-exported realm from the file `realm-export.json`.
+### Gateway Microservice
+`gateway-resource-microservice` is a Spring Cloud Gateway app and routes + load-balances requests to the other microservices. It's also an OAuth client (easier to forward Auth token) and resource server (so that auth token required to use gateway). 
