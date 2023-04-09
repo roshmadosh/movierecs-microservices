@@ -27,7 +27,8 @@ Note that this service might not be able to read environment variables via your 
 
 ### Admin Microservice
 
-`admin-microservice` is a secured endpoint that includes admin-level endpoints. Used for functions such as adding a user to the Users microservice.
+`admin-microservice` is a secured endpoint that includes admin-level endpoints. Used for functions such as adding a user to the Users microservice.  
 
+This service makes `RestTemplate` calls to the dockerized Keycloak server. **The auth token must be retrieved from the Docker host ip.** This is because the injected host name for the RestTemplate request appears to only take literal values (i.e. injecting the name of the Docker container doesn't seem to work).
 ### Gateway Microservice
 `gateway-resource-microservice` is a Spring Cloud Gateway app and routes + load-balances requests to the other microservices. It's also an OAuth client (easier to forward Auth token) and resource server (so that auth token required to use gateway). 

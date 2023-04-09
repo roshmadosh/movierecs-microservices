@@ -66,7 +66,6 @@ public class UsersServiceImpl implements UsersService {
         headers.set("Content-type", "application/json");
 
         HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
-
         ResponseEntity<Object[]> response = restTemplate.exchange(
                 keycloakServerHost + "/admin/realms/movierecs-realm/users?email=" + email + "&&exact=true",
                 HttpMethod.GET, requestEntity, Object[].class);
