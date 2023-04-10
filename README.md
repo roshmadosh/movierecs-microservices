@@ -3,6 +3,10 @@
 Spring Boot microservices for a movie recommendations application.  
 
 **Note**: All POST requests must be in snake case.
+
+### Keycloak Configuration  
+While the `realm-export.json` contains most of the auth server's configuration, you must still create a user in the `movierecs-realm` with the `realm-admin` role assigned. Note that `Frontend URL` is set to `localhost:8080` to allow tokens from port-mapped docker endpoint to pass authentication filter.  
+
 ### Service Discovery Microservice  
 
 `discovery-service/` is implemented as a [Spring Cloud Netflix](https://cloud.spring.io/spring-cloud-netflix/reference/html/) Eureka server. If running locally, you must run this application first.  
@@ -13,9 +17,6 @@ Spring Boot microservices for a movie recommendations application.
 
 TMDB doesn't accept batch requests for movie details, which is why an extra storage step (database) is included.  
 
-The TMDB API key is stored as a local environment variable, under `TMDB_API_KEY`.  
-
-Note that this service might not be able to read environment variables via your IDE. If that's the case, run `mvn spring-boot:run` from the `assets-service/` directory.  
 
 ### ML Microservice    
 
@@ -29,6 +30,5 @@ Note that this service might not be able to read environment variables via your 
 
 `admin-microservice` is a secured endpoint that includes admin-level endpoints. Used for functions such as adding a user to the Users microservice.  
 
-This service makes `RestTemplate` calls to the dockerized Keycloak server. **The auth token must be retrieved from the Docker host ip.** This is because the injected host name for the RestTemplate request appears to only take literal values (i.e. injecting the name of the Docker container doesn't seem to work).
 ### Gateway Microservice
 `gateway-resource-microservice` is a Spring Cloud Gateway app and routes + load-balances requests to the other microservices. It's also an OAuth client (easier to forward Auth token) and resource server (so that auth token required to use gateway). 

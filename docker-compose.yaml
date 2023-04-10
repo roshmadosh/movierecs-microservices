@@ -60,7 +60,7 @@ services:
       - eureka.client.service-url.defaultZone=http://discoveryservice:8761/eureka/
       - spring.security.oauth2.resourceserver.jwt.jwk-set-uri=http://keycloak:8080/realms/movierecs-realm/protocol/openid-connect/certs
       # for resttemplate call when checking if email exists
-      - keycloak.server.host=http://172.17.0.1:8080
+      - keycloak.server.host=http://keycloak:8080
       - management.zipkin.tracing.endpoint=http://zipkin:9411/api/v2/spans
   usersservice:
     image: hiroshinobuoka/users-service
