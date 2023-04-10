@@ -55,6 +55,8 @@ services:
       restart_policy:
         condition: on-failure
         max_attempts: 3
+    volumes:
+      - /var/log/movierecs/admin-service:/usr/share/admin-service/logs:rw
     # overriding oauth2 URI from localhost -> Docker-managed host (i.e. "keycloak")
     environment:
       - eureka.client.service-url.defaultZone=http://discoveryservice:8761/eureka/

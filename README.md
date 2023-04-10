@@ -5,7 +5,7 @@ Spring Boot microservices for a movie recommendations application.
 **Note**: All POST requests must be in snake case.
 
 ### Keycloak Configuration  
-While the `realm-export.json` contains most of the auth server's configuration, you must still create a user in the `movierecs-realm` with the `realm-admin` role assigned. Note that `Frontend URL` is set to `localhost:8080` to allow tokens from port-mapped docker endpoint to pass authentication filter.  
+While the `realm-export.json` contains most of the auth server's configuration, you must still create a user in the `movierecs-realm` with the `realm-admin` role assigned. Note that `Frontend URL` is set to `localhost:8080` to allow tokens issued from port-mapped docker endpoint passes authentication filter.  
 
 ### Service Discovery Microservice  
 

@@ -58,19 +58,19 @@ public class UsersServiceImpl implements UsersService {
         return usersClient.delete("Bearer " + adminToken, requestBody);
     }
 
-
     @Override
     public boolean emailExists(String adminToken, String email) {
+        logger.info("Checking if email '" + email + "' exists in auth server.");
+        logger.info("Auth token ending in: " + adminToken.substring(adminToken.length() - 8));
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + adminToken);
         headers.set("Content-type", "application/json");
 
         HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
-        logger.warn("***************" + keycloakServerHost);
         ResponseEntity<Object[]> response = restTemplate.exchange(
                 keycloakServerHost + "/admin/realms/movierecs-realm/users?email=" + email + "&&exact=true",
                 HttpMethod.GET, requestEntity, Object[].class);
-
+        logger.info("Completed RestTemplate call to check if email '" + email + "' exists");
         return response.getBody().length != 0;
     }
 
