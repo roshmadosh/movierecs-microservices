@@ -7,6 +7,11 @@ Spring Boot microservices for a movie recommendations application.
 ### Keycloak Configuration  
 While the `realm-export.json` contains most of the auth server's configuration, you must still create a user in the `movierecs-realm` with the `realm-admin` role assigned. Note that `Frontend URL` is set to `localhost:8080` to allow tokens issued from port-mapped docker endpoint passes authentication filter.  
 
+### Filebeats + ELK Stack  
+For centralized logging and log analysis. Filebeats Docker container is volume-mounted to the host-machine's `/var/lib/docker/container` folder, where the containers' STDOUT is recorded as logs for all spun up containers on the host machine (this is a default feature of Docker).  
+
+Logstash provides the logging schema that adds structure to the logs collected by Filebeats, and passes it on to Elasticsearch. Elasticsearch is a data store that's optimized for text-search anaylysis. Kibana is the UI/visualization tool that runs on top of Elasticsearch, and can be accessed from `localhost:5601`.
+
 ### Service Discovery Microservice  
 
 `discovery-service/` is implemented as a [Spring Cloud Netflix](https://cloud.spring.io/spring-cloud-netflix/reference/html/) Eureka server. If running locally, you must run this application first.  
